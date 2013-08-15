@@ -1,0 +1,77 @@
+<html>
+<head>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+    <script>
+        angular.module('editable', []).directive('contenteditable', function() {
+            return {
+                require: 'ngModel',
+                link: function(scope, elm, attrs, ctrl) {
+                    e = elm;
+                    // view -> model
+                    elm.bind('input', function() {
+                        scope.$apply(function() {
+                            ctrl.$setViewValue(elm.html());
+                        });
+                    });
+
+                    // model -> view
+                    ctrl.$render = function() {
+                        elm.html(ctrl.$viewValue);
+                    };
+
+                    // load init value from DOM
+                    ctrl.$setViewValue(elm.html());
+                }
+            };
+        }).
+                directive("f", function(){
+                    return {
+                        link: function (scope,elm,attrs){
+                            scope.funk = function(){
+                                alert("funky");
+                            }
+
+                            //You always watch a value in the scope, not the attribute it's self
+                            //it is possible to watch without a directive, all that is needed is a scope
+                            //just watch a value in the scope, and a function will be called everytime it changes
+                            //observe is only called when the value it refers to changes
+                            scope.$watch(attrs.f, function(f){
+                                f();
+                            });
+
+                            //observe refers to an attribute, you observe the attribute it's self.
+                            //what is taken out of it is the interpolated text the attribute should stand for
+                            //it could be observed and then parsed into a value, but that would require a scope to do that
+                            attrs.$observe("o", function(f){
+                                alert("observe " + f);
+                            })
+
+
+                            scope.$watch(attrs.v, function(v){
+                                alert(v);
+                            })
+                        }
+                    }
+                });
+        function Ctrl($scope){
+            $scope.count = 0;
+            $scope.a = function(){
+                $scope.funk = function(){
+                    $scope.count++
+                }
+            }
+            $scope.callv = function(n){
+                return n
+            }
+        }
+    </script>
+</head>
+
+<body ng-app="editable" ng-controller="Ctrl">
+    <div contenteditable="true" ng-model="fuck"></div>
+    <input type=text ng-model="fuck">
+
+    <div f="funk" o="{{ count }} lunatics" v="callv(2)" ng-click="a()">Show me the money {{ count }}</div>
+</body>
+</html>

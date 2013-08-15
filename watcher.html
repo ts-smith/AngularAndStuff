@@ -1,0 +1,32 @@
+<html>
+<head>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+
+    <script>
+        angular.module("App", []).
+                directive("watch", function(){
+                    return {
+                        link: function(scope, elm, attrs){
+                            scope.$watch("thing", function(thing){
+                                alert(thing);
+                                scope.otherthing = thing;
+                            });
+                        }
+                    }
+                });
+
+        function Ctrl($scope){
+            $scope.a = 2;
+        }
+    </script>
+
+</head>
+<body ng-app="App" ng-controller="Ctrl">
+    <div watch thing="2">
+        {{ otherthing }}
+
+    </div>
+
+</body>
+</html>

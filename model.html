@@ -1,0 +1,42 @@
+<html>
+<head>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+    <script>
+        angular.module('editable', []).directive('contenteditable', function() {
+            return {
+                require: 'ngModel',
+                link: function(scope, elm, attrs, ctrl) {
+                    e = elm;
+                    // view -> model
+                    elm.bind('input', function() {
+                        scope.$apply(function() {
+                            ctrl.$setViewValue(elm.html());
+                        });
+                    });
+
+                    // model -> view
+                    ctrl.$render = function() {
+                        elm.html(ctrl.$viewValue);
+                    };
+
+                    // load init value from DOM
+                    ctrl.$setViewValue(elm.html());
+                }
+            };
+        });
+    </script>
+    <style>
+        div {
+            position: absolute;
+        }
+    </style>
+</head>
+<body ng-app=editable>
+    <input type="text" ng-model="fuck">
+    <input type="text" ng-model="fuck">
+    <div contenteditable="false" ng-model="fuck"></div>
+
+
+</body>
+</html>

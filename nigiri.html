@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="../libraries/angular.min.unstable.js"></script>
+    <title>Nigiri</title>
+    <style>
+        dl {
+            display: block;
+            position: absolute;
+        }
+        dt {
+            background-color: yellow;
+            border: 1px solid black;
+        }
+        .nigiri {
+            width: 150px;
+
+            -webkit-transform-style: preserve-3d;
+            -webkit-transform: perspective(1200px) rotateY(45deg) !important;
+        }
+        .node {
+            display: block;
+            position: relative;
+            -webkit-transform-origin: center top;
+            -webkit-transform-style: preserve-3d;
+
+            -webkit-transform: rotateX(15deg) scaleY(1.2);
+
+        }
+        .item {
+            margin: 0;
+            border: 1px solid black;
+            background: yellow;
+            position: relative;
+            -webkit-transform: translateZ(-0.1px);
+            -webkit-transform-style: preserve-3d;
+        }
+        .item:hover, dt:hover {
+            background-color: blue !important;
+        }
+    </style>
+</head>
+<body ng-app>
+
+<dl>
+    <div class="nigiri">
+
+        <dt>Some Shit</dt>
+        <span class="node">
+            <dd class="item">Something Here</dd>
+            <span class="node">
+                   <dd class="item">Second Thing</dd>
+                   <span class="node">
+                        <dd class="item">Third Thing</dd>
+                        <span class="node">
+                            <dd class="item">Thing</dd>
+                            <span class="node">
+                                <dd class="item">Thing</dd>
+                            </span>
+                        </span>
+                   </span>
+            </span>
+        </span>
+    </div>
+</dl>
+
+<style id="perspective">
+    .perspective {
+        position: absolute;
+        -webkit-transform-style: preserve-3d;
+        -webkit-transform: perspective(1200px);
+        -webkit-transform-origin: 21px center -21px;
+        /*-webkit-transform: perspective(1200px) rotateX(25deg) rotateY(-25deg);*/
+        -webkit-transform: rotateX(20deg) rotateY(10deg);
+        font-size: 0;
+    }
+</style>
+
+<style>
+    #wrapper{
+        position: absolute;
+        left:350px;
+        top: 200px;
+    }
+    .row {
+        /*float: left;*/
+        /*clear: both;*/
+    }
+    .wallnode {
+        display: inline-block;
+        -webkit-transform-style: preserve-3d;
+
+    }
+    .wall {
+        -webkit-transform-style: preserve-3d;
+        background-color: blue;
+        display: inline-block;
+        border: 1px solid black;
+        /*margin: 15px 15px;*/
+        width: 40px;
+        height: 40px;
+        -webkit-transform-origin: 21px center -21px;
+    }
+    .left {
+        -webkit-transform-origin: left center;
+        -webkit-transform: rotateY(90deg);
+    }
+    .right{
+        -webkit-transform-origin: right center;
+        -webkit-transform: rotateY(-90deg);
+    }
+    .top{
+        -webkit-transform-origin: center bottom;
+        -webkit-transform: rotateX(90deg);
+    }
+    .bottom{
+        -webkit-transform-origin: center top;
+        -webkit-transform: rotateX(-90deg);
+    }
+    span {
+        position: absolute;
+        font-size: 18px;
+        color: red;
+    }
+    @-webkit-keyframes rotate{
+        0%{
+            -webkit-transform: rotateX(20deg) rotateY(10deg);
+        }
+        35%{
+            -webkit-transform: rotateX(20deg) rotateY(10deg);
+        }
+        65%{
+            -webkit-transform: rotateX(20deg) rotateY(100deg);
+        }
+        100%{
+            -webkit-transform: rotateX(20deg) rotateY(100deg);
+        }
+    }
+    @-webkit-keyframes expand{
+        0%{
+            -webkit-transform: translateZ(0px);
+            margin:0px;
+        }
+        35%{
+            -webkit-transform: translateZ(90px);
+        }
+
+        65%{
+            -webkit-transform: translateZ(90px);
+        }
+        100%{
+            -webkit-transform: translateZ(0px);
+        }
+    }
+
+
+    .perspective.active{
+        -webkit-animation-name: rotate;
+        -webkit-animation-duration: 4s;
+        -webkit-animation-fill-mode: forwards;
+
+    }
+    .perspective.active .wall{
+        -webkit-animation-name: expand;
+        -webkit-animation-duration: 4s;
+        -webkit-animation-fill-mode: forwards;
+        /*-webkit-animation-delay: .5s;*/
+        /*-webkit-animation-iteration-count: 2;*/
+        /*animation-direction: alternate;*/
+    }
+
+    * {
+        /*-webkit-transform: rotateY(0deg) !important;*/
+    }
+</style>
+<script>
+    function animate () {
+        var perspective = document.getElementsByClassName("perspective")[0];
+        perspective.classList.add("active");
+    }
+</script>
+
+<section>
+    <div id="wrapper">
+        <input id="slideX" type="range"
+               min="0" max="360" step="3" value="25"
+               onchange="changeRotation(this.value, y, z)" />
+        <input id="slideY" type="range"
+               min="0" max="360" step="3" value="25"
+               onchange="changeRotation(x, this.value, z)" />
+        <input id="slideZ" type="range"
+               min="0" max="360" step="3" value="25"
+               onchange="changeRotation(x, y, this.value)" />
+        <input type="number" ng-model="margin">
+        <input type="text" ng-model="margin">
+        <p>{{ margin }}</p>
+
+        <div class="perspective" onclick="animate()">
+            <div class="row">
+                <div class="wallnode top">
+                    <div class="wall" ng-style="{margin: margin + 'px'}"><span>Yo</span></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="wallnode">
+                    <div class="wall" ng-style="{margin: margin + 'px'}"><span>Fuck</span></div>
+                    <div class="wallnode left">
+                        <div class="wall" ng-style="{margin: margin + 'px'}"><span>This</span></div>
+                        <div class="wallnode left">
+                            <div class="wall" ng-style="{margin: margin + 'px'}"><span>Shit</span></div>
+                            <div class="wallnode left">
+                                <div class="wall" ng-style="{margin: margin + 'px'}"><span>It's</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="wallnode bottom">
+                   <div class="wall" ng-style="{margin: margin + 'px'}"><span>Wack</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<style>
+    #n3 {
+        position: absolute;
+        left: 800px;
+        top: 150px;
+    }
+    @-webkit-keyframes test{
+        0%{
+            display: none;
+            width: 45px;
+            background-color: green;
+        }
+        50%{
+            display: block;
+        }
+        100%{
+            width: 35px;
+        }
+    }
+    .block{
+        -webkit-animation-name: test;
+        -webkit-animation-duration: 2s;
+        -webkit-animation-delay: .5s;
+        -webkit-animation-iteration-count: 2;
+        animation-direction: alternate;
+        width: 40px;
+        height: 40px;
+        background: blue;
+    }
+    .block:hover{
+        -webkit-animation-name: test;
+        -webkit-animation-duration: 2s;
+    }
+</style>
+<div id=n3>
+    <div class="block"></div>
+</div>
+
+
+
+
+<script>
+    var css = document.styleSheets[1];
+    var y = 0;
+    var x = 0;
+    var z = 0
+    function changeRotation(nx, ny, nz) {
+        x = nx;
+        y = ny;
+        z = nz;
+        css.deleteRule(0);
+        css.insertRule(".perspective { position: absolute; -webkit-transform-origin: 21px center -21px; -webkit-transform-style: preserve-3d; -webkit-transform: perspective(1200px) rotateX(" + x + "deg) rotateY(" + y + "deg) rotateZ(" + z +"deg) !important; font-size: 0px; }",0);
+    }
+</script>
+
+</body>
+</html>
